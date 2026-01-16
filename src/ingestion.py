@@ -13,7 +13,7 @@ collection = client.get_or_create_collection(name="project_docs", embedding_func
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
 
-pdf_files = ["The_King's_Challenge.pdf", "The_Rise_of_Aridoria.pdf", "The_Youngest_Prince's_Journey.pdf"]
+pdf_files = ["data/The_King’s_Challenge.pdf", "data/The_Rise_of_Aridoria.pdf", "data/The_Youngest_Prince's_Journey.pdf"]
 
 for pdf_path in pdf_files:
     print(f"Processing {pdf_path}...")
