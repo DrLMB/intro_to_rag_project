@@ -1,7 +1,11 @@
+import os
+from dotenv import load_dotenv
 import chromadb
 from chromadb.utils import embedding_functions
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+load_dotenv()
 
 openai_ef = embedding_functions.OpenAIEmbeddingFunction(
     api_key="MY_OPENAI_API_KEY",
