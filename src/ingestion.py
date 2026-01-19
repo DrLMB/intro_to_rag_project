@@ -8,7 +8,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 load_dotenv()
 
 openai_ef = embedding_functions.OpenAIEmbeddingFunction(
-    api_key="MY_OPENAI_API_KEY",
+    api_key=os.getenv("MY_OPENAI_API_KEY"), 
     model_name="text-embedding-3-small"
 )
 
@@ -17,7 +17,7 @@ collection = client.get_or_create_collection(name="project_docs", embedding_func
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
 
-pdf_files = ["data/The_King’s_Challenge.pdf", "data/The_Rise_of_Aridoria.pdf", "data/The_Youngest_Prince's_Journey.pdf"]
+pdf_files = ["data/The_King’s_Challenge.pdf", "data/The_Rise_of_Aridoria.pdf"]
 
 for pdf_path in pdf_files:
     print(f"Processing {pdf_path}...")
@@ -42,11 +42,18 @@ for pdf_path in pdf_files:
             metadatas_to_add.append({"source": pdf_path, "page": i + 1})
             
     if docs_to_add:
-        collection.add(
-            documents=docs_to_add, 
-            ids=ids_to_add,
-            metadatas=metadatas_to_add
-        )
+        batch_size = 40  
+        for j in range(0, len(docs_to_add), batch_size):
+            batch_docs = docs_to_add[j : j + batch_size]
+            batch_ids = ids_to_add[j : j + batch_size]
+            batch_metas = metadatas_to_add[j : j + batch_size]
+            
+            collection.add(
+                documents=batch_docs, 
+                ids=batch_ids,
+                metadatas=batch_metas
+            )
+        
         print(f"Added {len(docs_to_add)} chunks from {pdf_path}.")
 
 print("All files added to database successfully.")
